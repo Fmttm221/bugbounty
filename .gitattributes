@@ -1,0 +1,55 @@
+# ============================================================
+# 换行符策略：全仓库统一 LF
+#
+# 本机 core.autocrlf=true（系统级）。若不在此锁定，checkout 时
+# 文本文件会被改写成 CRLF，跨平台协作会出现整文件"虚假改动"。
+# ============================================================
+* text=auto eol=lf
+
+# ---- 文本：显式声明为 LF ----
+*.md            text eol=lf
+*.txt           text eol=lf
+*.py            text eol=lf
+*.sh            text eol=lf
+*.bash          text eol=lf
+*.yml           text eol=lf
+*.yaml          text eol=lf
+*.json          text eol=lf
+*.toml          text eol=lf
+*.ini           text eol=lf
+*.cfg           text eol=lf
+.gitignore      text eol=lf
+.gitattributes  text eol=lf
+.env.example    text eol=lf
+
+# ---- Windows 脚本保留 CRLF ----
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+# ---- 二进制：禁止任何转换 ----
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.webp   binary
+*.pdf    binary
+*.zip    binary
+*.gz     binary
+*.7z     binary
+*.tar    binary
+*.woff   binary
+*.woff2  binary
+*.ttf    binary
+*.otf    binary
+
+# ---- 运行产物兜底（.gitignore 已排除，此处防误提交损坏）----
+*.pcap    binary
+*.har     binary
+*.sqlite  binary
+*.db      binary
+
+# ---- GitHub 语言统计：资料/模板不计入代码量 ----
+references/**  linguist-documentation
+assets/**      linguist-documentation
