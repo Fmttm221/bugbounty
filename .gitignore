@@ -1,0 +1,27 @@
+# 凭证与私密配置
+.env
+.env.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# 运行时产物 / 抓取结果 / 证据
+runs/
+output/
+evidence/
+*.har
+*.pcap
+*.sqlite
+*.db
+*.log
+
+# 编辑器 / 系统
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
