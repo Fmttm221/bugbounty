@@ -1,1 +1,8 @@
-# TODO —— 待敲定（仅列 Python 侧依赖；MCP 客户端依赖另行说明）
+# Python 侧依赖
+#
+# 本 skill 的脚本几乎只用标准库。唯一需要第三方包的是微信抓包 addon，
+# 而它运行在 mitmdump 内部，由 mitmproxy 自身提供运行时。
+#
+# 环境配置（Kali / 代理 / API key 等）见 README.md，不在此文件说明。
+
+mitmproxy>=11.0        # 可选：仅微信小程序抓包需要
