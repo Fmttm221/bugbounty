@@ -6,7 +6,11 @@
 
 用法:
     python scripts/provider/urlscan.py quota
-    python scripts/provider/urlscan.py search 'domain:example.com' --size 100
+    python scripts/provider/urlscan.py search 'page.domain:example.com' --size 100
+
+⚠️ 搜索字段语法：
+    按域名搜用 page.domain:<域名>，**不要用 domain:**（不是合法字段，会返回垃圾）。
+    按 URL 搜用 task.url:<关键词>。total 字段恒为 10000 上限，不可信。
     python scripts/provider/urlscan.py submit https://example.com --visibility private
     python scripts/provider/urlscan.py result <uuid>
 
