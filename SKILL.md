@@ -281,7 +281,14 @@ L0 授权
  → L6 报告与提交
 ```
 
-每层有**门禁**（不满足不许进下一层）与**产出**（落盘到 `runs/<target>/<ts>/`）。
+每层有**门禁**与**产出**（落盘到 `runs/<target>/<ts>/`）。
+
+**门禁是默认路径，不是铁律** —— 确有理由可以说偏离，但要满足两条：
+
+1. **记录理由**（写进 `state.md`），否则视为违规
+2. **红线：永远不允许跳过侦察直接打击**
+   - L1 没产出资产清单 → 不许进 L4 打洞
+   - L5 没验证通过 → 不许进 L6 出报告
 
 ### 判定标准
 
@@ -354,7 +361,7 @@ L0 授权
 
 **被动优先** —— 先查第三方数据，不碰目标。
 
-1. **provider 一律用 `scripts/provider/` 下的脚本，不要手搓请求**
+1. **provider 优先用 `scripts/provider/` 下的脚本**；实在覆盖不到也可以手搓
    - `domains.py <domain>` —— 域名资产枚举：crtsh / certspotter / otx / wayback / netlas
    - `ip_intel.py <ip>` —— IP 情报：ipinfo / abuseipdb / shodan / censys / otx
    - `quake.py search '<query>'` —— 360 Quake 空间测绘（额度受限，双账号轮换）
