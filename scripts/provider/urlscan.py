@@ -29,9 +29,9 @@ API = "https://urlscan.io"
 
 
 def key() -> str:
-    val = (load().get("URLSCAN_KEY") or "").strip()
+    val = (load().get("URLSCAN_API_KEY") or "").strip()
     if not val:
-        raise RuntimeError("未配置 URLSCAN_KEY，见 .env")
+        raise RuntimeError("未配置 URLSCAN_API_KEY，见 .env")
     return val
 
 

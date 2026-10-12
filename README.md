@@ -35,8 +35,7 @@
 ## 快速上手
 
 ```bash
-git clone https://github.com/Fmttm221/bugbounty
-cd bugbounty
+# 进入本仓库目录后
 cp .env.example .env          # Windows: copy .env.example .env
 # 按下方表格编辑 .env
 python scripts/preflight.py   # 自检，缺什么会直接告诉你
@@ -71,28 +70,33 @@ Clash / v2ray / mihomo / mitmproxy / 公司代理都能填。
 
 ---
 
-## Provider 状态
+## Provider 说明
 
-`python scripts/provider/verify.py` 实测（2026-10）：
+每个 provider 的可用性取决于**你自己的账号**。先跑一次验证：
 
-| Provider | 归属 | 状态 | 说明 |
-|---|---|---|---|
-| crtsh | 国外 | ✅ | 免费，无需 key |
-| wayback | 国外 | ✅ | 免费，无需 key，**需走代理** |
-| certspotter | 国外 | ✅ | 免费，无需 key |
-| urlscan | 国外 | ✅ | 直连可通；search 1000/日 |
-| netlas | 国外 | ✅ | |
-| abuseipdb | 国外 | ✅ | |
-| ipinfo | 国外 | ✅ | |
-| censys | 国外 | ✅ | 走 **v3 平台 API**；旧版 search API 已于 2026-09-30 下线 |
-| quake | 国内 | ✅ | 每账号 5 次/月，双账号自动轮换，**免费额度为 0 时拒绝查询**以防误扣 credit |
-| shodan | 国外 | ⚠️ | key 有效，但剩余查询 = 0 |
-| zoomeye | 国外 | ⚠️ | key 有效，但账号无额度（`credits_insufficient`）；端点须用 `api.zoomeye.ai` 且为 POST |
-| hunter | 国内 | ⚠️ | key 有效，但账号无 API 权限（需付费） |
-| otx | 国外 | ❌ | key 无效 |
-| github | 国外 | ❌ | token 无效 |
+```bash
+python scripts/provider/verify.py          # 全部
+python scripts/provider/verify.py shodan   # 单个
+```
 
-> `LIMIT` 状态表示**认证通过但额度/权限不足** —— 与 key 无效是两回事。
+`verify.py` 区分三种状态：`OK`（可用）、`LIMIT`（**认证通过但额度/权限不足**）、`FAIL`（key 无效）。
+
+| Provider | 归属 | 需要 key | 出口 | 说明 |
+|---|---|---|---|---|
+| quake | 国内 | 是 | 直连 | 每账号 5 次/月；多账号自动轮换；免费额度为 0 时**拒绝查询**以防误扣 credit |
+| crtsh | 国外 | **否** | **需代理** | 站点不稳定，脚本需带重试 |
+| wayback | 国外 | **否** | **需代理** | CDX 接口 |
+| certspotter | 国外 | 否（可选带 key 提额） | 直连 | |
+| otx | 国外 | **否** | 直连 | indicator 查询是**公开端点**，无需 key |
+| urlscan | 国外 | 是（可免费注册） | 直连 | search 1000/日 |
+| netlas | 国外 | 是 | 直连 | |
+| abuseipdb | 国外 | 是 | 直连 | 1000/日 |
+| ipinfo | 国外 | 是（可选 token 提额） | 直连 | |
+| censys | 国外 | 是 | 直连 | 走 **v3 平台 API**；旧版 search API 已于 2026-09-30 下线；免费账号只能用资产查询，search 端点需组织 ID |
+| shodan | 国外 | 是 | 直连 | ⚠️ `api-info` 报的 `query_credits` **不反映 host 查询配额**，别被它误导 |
+| zoomeye | 国外 | 是 | **需代理** | 端点须用 `api.zoomeye.ai` 且为 **POST**（GET 返 405） |
+| hunter | 国内 | 是 | 直连 | API 需付费账号 |
+| github | 国外 | 是 | — | 用于代码搜索 |
 
 ---
 
@@ -138,6 +142,8 @@ bugbounty/
 | `scripts/wechat_parse.py` | 抓包日志 → 端点清单 |
 | `scripts/provider/base.py` | provider 通用：HTTP / 代理 / 配额 / 脱敏 |
 | `scripts/provider/verify.py` | 验证全部 provider key |
+| `scripts/provider/domains.py` | **域名资产枚举**：crtsh / certspotter / otx / wayback / netlas |
+| `scripts/provider/ip_intel.py` | **IP 情报**：ipinfo / abuseipdb / shodan / censys / otx |
 | `scripts/provider/quake.py` | 360 Quake（双账号轮换 + 额度保护） |
 | `scripts/provider/urlscan.py` | urlscan.io |
 

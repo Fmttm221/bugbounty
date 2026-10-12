@@ -31,7 +31,7 @@ def keys() -> list:
     cfg = load()
     out = []
     for i in range(1, 10):
-        val = (cfg.get("QUAKE_KEY_" + str(i)) or "").strip()
+        val = (cfg.get("QUAKE_API_KEY_" + str(i)) or "").strip()
         if val:
             out.append(val)
     return out
@@ -58,7 +58,7 @@ def pick_key():
     """选剩余免费额度最多的 key。平台查不到时退回本地记账。"""
     ks = keys()
     if not ks:
-        raise RuntimeError("未配置 QUAKE_KEY_*，见 .env")
+        raise RuntimeError("未配置 QUAKE_API_KEY_*，见 .env")
     best, best_rem = None, -1
     for k in ks:
         rem, _, _ = platform_status(k)
@@ -88,7 +88,7 @@ def search(query: str, size: int = 10, start: int = 0, allow_credit: bool = Fals
 def cmd_info(_args) -> int:
     ks = keys()
     if not ks:
-        print("未配置 QUAKE_KEY_*，见 .env")
+        print("未配置 QUAKE_API_KEY_*，见 .env")
         return 1
     for k in ks:
         rem, name, ban = platform_status(k)

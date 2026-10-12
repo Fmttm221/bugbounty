@@ -91,8 +91,10 @@ def main() -> int:
         report(OK if cfg.get(key) else BAD, key + " 已配置")
 
     # 6) provider key 覆盖率
-    providers = ["FOFA_KEY", "QUAKE_KEY", "HUNTER_KEY", "SHODAN_KEY",
-                 "CENSYS_ID", "CENSYS_SECRET", "VIRUSTOTAL_KEY", "GITHUB_TOKEN"]
+    providers = ["QUAKE_API_KEY_1", "HUNTER_API_KEY", "ZOOMEYE_API_KEY",
+                 "SHODAN_API_KEY", "CENSYS_API_KEY", "NETLAS_API_KEY",
+                 "ABUSEIPDB_API_KEY", "IPINFO_API_KEY", "URLSCAN_API_KEY",
+                 "OTX_API_KEY", "GITHUB_TOKEN"]
     ready = [k for k in providers if cfg.get(k)]
     report(OK if ready else WARN, "provider key",
            str(len(ready)) + "/" + str(len(providers)) + " 已配置")

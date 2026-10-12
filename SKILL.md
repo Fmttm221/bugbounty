@@ -347,10 +347,11 @@ L0 授权
 
 **被动优先** —— 先查第三方数据，不碰目标。
 
-1. **provider 脚本**（`scripts/provider/`，调用 `.env` 中的 API）
-   - 国内 provider（FOFA / QUAKE / HUNTER）→ 直连
-   - 国外 provider（SHODAN / CENSYS / VIRUSTOTAL / GITHUB）→ `BB_PROXY_OS_LOCAL`
-   - 覆盖：证书透明度、历史 URL、代码仓库、云存储桶
+1. **provider 脚本**（`scripts/provider/`，各源出口差异见 README）
+   - `domains.py <domain>` —— 域名资产枚举：crtsh / certspotter / otx / wayback / netlas
+   - `ip_intel.py <ip>` —— IP 情报：ipinfo / abuseipdb / shodan / censys / otx
+   - `quake.py search '<query>'` —— 360 Quake 空间测绘（额度受限，双账号轮换）
+   - `verify.py` —— 先验证自己的 key 哪些可用
 2. **Kali 主动收集**
    - 子域：`subfinder` + 字典爆破（定向词表优先 `app` / `oa` / `his`）
    - 探活：`httpx`
