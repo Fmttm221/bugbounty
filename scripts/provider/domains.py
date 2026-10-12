@@ -7,7 +7,7 @@
 源:
     crtsh       证书透明度      无需 key  需代理  站点不稳定，自带重试
     certspotter 证书签发        无需 key  直连
-    otx         被动 DNS        需 key    直连  ⚠️ 与公开的 indicator 端点不同，此端点需认证
+    otx         ~~被动 DNS~~    **已停用**  —— key 无效（公开 indicator 端点仍可用，见 ip_intel）
     wayback     历史 URL        无需 key  需代理
     netlas      域名资产        需 key    直连
 
@@ -118,6 +118,12 @@ SOURCES = {
     "netlas":      (s_netlas,      "直连"),
 }
 
+# 已停用：账号无额度 / 无权限 / key 无效 —— 默认跳过，防止真实使用时反复报错。
+# 修好 key 后把对应项从这里删掉即可恢复；也可用 --source 显式指定强制运行。
+DISABLED = {
+    "otx": "被动 DNS 端点需认证，当前 key 无效（公开的 indicator 端点不受影响）",
+}
+
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="域名资产枚举")
@@ -128,7 +134,13 @@ def main() -> int:
 
     cfg = load()
     proxy = (cfg.get("BB_PROXY_OS_LOCAL") or "").strip() or None
-    names = [s.strip() for s in args.source.split(",") if s.strip()] or list(SOURCES)
+    explicit = [s.strip() for s in args.source.split(",") if s.strip()]
+    if explicit:
+        names = explicit
+    else:
+        names = [s for s in SOURCES if s not in DISABLED]
+        for d, why in DISABLED.items():
+            print("  [跳过停用源] %s —— %s" % (d, why))
 
     subdomains, urls, stats, errors = set(), set(), {}, {}
     for name in names:

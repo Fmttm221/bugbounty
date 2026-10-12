@@ -352,6 +352,7 @@ L0 授权
    - `ip_intel.py <ip>` —— IP 情报：ipinfo / abuseipdb / shodan / censys / otx
    - `quake.py search '<query>'` —— 360 Quake 空间测绘（额度受限，双账号轮换）
    - `verify.py` —— 先验证自己的 key 哪些可用
+   - **已停用的源默认跳过**（见 README），不会在真实使用时报错
 2. **Kali 主动收集**
    - 子域：`subfinder` + 字典爆破（定向词表优先 `app` / `oa` / `his`）
    - 探活：`httpx`

@@ -81,22 +81,27 @@ python scripts/provider/verify.py shodan   # 单个
 
 `verify.py` 区分三种状态：`OK`（可用）、`LIMIT`（**认证通过但额度/权限不足**）、`FAIL`（key 无效）。
 
-| Provider | 归属 | 需要 key | 出口 | 说明 |
-|---|---|---|---|---|
-| quake | 国内 | 是 | 直连 | 每账号 5 次/月；多账号自动轮换；免费额度为 0 时**拒绝查询**以防误扣 credit |
-| crtsh | 国外 | **否** | **需代理** | 站点不稳定，脚本需带重试 |
-| wayback | 国外 | **否** | **需代理** | CDX 接口 |
-| certspotter | 国外 | 否（可选带 key 提额） | 直连 | |
-| otx | 国外 | **否** | 直连 | indicator 查询是**公开端点**，无需 key |
-| urlscan | 国外 | 是（可免费注册） | 直连 | search 1000/日 |
-| netlas | 国外 | 是 | 直连 | |
-| abuseipdb | 国外 | 是 | 直连 | 1000/日 |
-| ipinfo | 国外 | 是（可选 token 提额） | 直连 | |
-| censys | 国外 | 是 | 直连 | 走 **v3 平台 API**；旧版 search API 已于 2026-09-30 下线；免费账号只能用资产查询，search 端点需组织 ID |
-| shodan | 国外 | 是 | 直连 | ⚠️ `api-info` 报的 `query_credits` **不反映 host 查询配额**，别被它误导 |
-| zoomeye | 国外 | 是 | **需代理** | 端点须用 `api.zoomeye.ai` 且为 **POST**（GET 返 405） |
-| hunter | 国内 | 是 | 直连 | API 需付费账号 |
-| github | 国外 | 是 | — | 用于代码搜索 |
+| Provider | 归属 | 需要 key | 出口 | 状态 | 说明 |
+|---|---|---|---|---|---|
+| quake | 国内 | 是 | 直连 | ✅ | 每账号 5 次/月；多账号自动轮换；免费额度为 0 时**拒绝查询**以防误扣 credit |
+| crtsh | 国外 | **否** | **需代理** | ✅ | 站点不稳定，脚本自带重试 |
+| certspotter | 国外 | 否（可选带 key 提额） | 直连 | ✅ | |
+| wayback | 国外 | **否** | **需代理** | ✅ | CDX 极慢，脚本已加 `fastLatest=true` |
+| netlas | 国外 | 是 | 直连 | ✅ | |
+| urlscan | 国外 | 是（可免费注册） | 直连 | ✅ | search 1000/日 |
+| abuseipdb | 国外 | 是 | 直连 | ✅ | 1000/日 |
+| ipinfo | 国外 | 是（可选 token 提额） | 直连 | ✅ | |
+| censys | 国外 | 是 | 直连 | ✅ | 走 **v3 平台 API**；旧版已于 2026-09-30 下线 |
+| shodan | 国外 | 是 | 直连 | ✅ | `query_credits` **不反映 host 查询配额**，别被它误导 |
+| otx（IP 情报） | 国外 | **否** | 直连 | ✅ | indicator 查询是**公开端点** |
+| otx（被动 DNS） | 国外 | 是 | 直连 | ⛔ **已停用** | 该端点需认证，当前 key 无效 |
+| zoomeye | 国外 | 是 | **需代理** | ⛔ **已停用** | 账号无额度（`credits_insufficient`） |
+| hunter | 国内 | 是 | 直连 | ⛔ **已停用** | API 需付费账号 |
+| github | 国外 | 是 | — | ⛔ **已停用** | token 无效 |
+
+> **已停用** = 默认跳过，不会在真实使用时报错。
+> 修好 key 或升完额度后，删掉 `scripts/provider/domains.py` 里 `DISABLED` 对应的项即可恢复；
+> 也可用 `--source <名字>` 显式指定强制运行（便于验证修好的 key）。
 
 ---
 
