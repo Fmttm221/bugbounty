@@ -52,10 +52,10 @@ def main() -> int:
         report(BAD, ".env 存在", "未找到 " + str(ENV_FILE))
 
     # 2) Clash 端口
-    local = cfg.get("BB_PROXY_OS_LOCAL", "")
+    local = cfg.get("RVN_PROXY_OS_LOCAL", "")
     proxy_alive = False
     if not local:
-        report(BAD, "BB_PROXY_OS_LOCAL", "未配置")
+        report(BAD, "RVN_PROXY_OS_LOCAL", "未配置")
     else:
         host, port = _split(local)
         proxy_alive = _tcp(host, port)

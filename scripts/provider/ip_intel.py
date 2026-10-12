@@ -23,7 +23,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from base import http_json, load  # noqa: E402
 
-UA = {"User-Agent": "bugbounty-skill/0.1"}
+UA = {"User-Agent": "raven/0.1"}
 
 
 def _key(name: str) -> str:
@@ -97,7 +97,7 @@ def main() -> int:
     args = ap.parse_args()
 
     cfg = load()
-    proxy = (cfg.get("BB_PROXY_OS_LOCAL") or "").strip() or None
+    proxy = (cfg.get("RVN_PROXY_OS_LOCAL") or "").strip() or None
     names = [s.strip() for s in args.source.split(",") if s.strip()] or list(SOURCES)
 
     results, errors = {}, {}

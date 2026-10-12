@@ -3,7 +3,7 @@
 
 适配性设计:
     * Clash 是**可选**的。没有 Clash 也能正常用本 skill —— 只要 .env 里
-      填好 BB_PROXY_OS_LOCAL / BB_PROXY_OS_KALI（任意 HTTP 代理都行）。
+      填好 RVN_PROXY_OS_LOCAL / RVN_PROXY_OS_KALI（任意 HTTP 代理都行）。
     * 检测不到 Clash 时**静默跳过**（退出码 0），不阻塞主流程。
     * 控制口端口是随机的，因此从配置动态读取；也可在 .env 显式指定。
     * 探测顺序: .env 的 CLASH_CONTROLLER -> 各常见 Clash 变体的配置路径。
@@ -53,7 +53,7 @@ def _expand(p: str) -> Path:
 
 
 def _mixed_port_from_env() -> int:
-    url = (load().get("BB_PROXY_OS_LOCAL") or "").strip()
+    url = (load().get("RVN_PROXY_OS_LOCAL") or "").strip()
     if url:
         try:
             return int(url.rsplit(":", 1)[-1].split("/")[0])
@@ -95,7 +95,7 @@ def clash_config():
 def _no_clash() -> int:
     print("[clash] 未检测到 Clash —— 这是可选功能，已跳过。")
     print("        不用 Clash 也能正常使用本 skill，只需在 .env 填好：")
-    print("          BB_PROXY_OS_LOCAL / BB_PROXY_OS_KALI （任意 HTTP 代理均可）")
+    print("          RVN_PROXY_OS_LOCAL / RVN_PROXY_OS_KALI （任意 HTTP 代理均可）")
     print("        如需启用节点切换，在 .env 填 CLASH_CONTROLLER / CLASH_SECRET")
     return 0
 

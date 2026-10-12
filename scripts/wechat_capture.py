@@ -10,7 +10,7 @@
 产出全部落在 runs/<target>/<ts>/wechat/（见 SKILL.md §1.1）。
 
 设计要点:
-    * mitmdump 上游串接本机代理（.env 的 BB_PROXY_OS_LOCAL），保证出口不变
+    * mitmdump 上游串接本机代理（.env 的 RVN_PROXY_OS_LOCAL），保证出口不变
     * 改系统代理前先备份，stop 时原样恢复 —— 绝不把用户网络留在半配置状态
     * 端口被占用时明确报错，不静默失败
     * 抓包产物、状态文件全部落在 runs 内
@@ -186,7 +186,7 @@ def cmd_start(args) -> int:
 
     mitmdump = find_mitmdump()
     cfg = load()
-    upstream = (cfg.get("BB_PROXY_OS_LOCAL") or "").strip()
+    upstream = (cfg.get("RVN_PROXY_OS_LOCAL") or "").strip()
 
     cmd = [mitmdump, "-s", str(HERE / "wechat_addon.py"), "-p", str(port),
            "--set", "termlog_verbosity=info", "--set", "flow_detail=0"]
@@ -196,7 +196,7 @@ def cmd_start(args) -> int:
         cmd += ["--mode", "upstream:" + upstream]
         print("[+] 上游: " + upstream)
     else:
-        print("[!] .env 未配置 BB_PROXY_OS_LOCAL，按直连处理", file=sys.stderr)
+        print("[!] .env 未配置 RVN_PROXY_OS_LOCAL，按直连处理", file=sys.stderr)
 
     env = dict(os.environ)
     env["WECHAT_LOG"] = str(log_path)

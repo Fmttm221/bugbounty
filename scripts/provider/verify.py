@@ -19,7 +19,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from base import http_json, load, mask  # noqa: E402
 
-UA = {"User-Agent": "bugbounty-skill/0.1"}
+UA = {"User-Agent": "raven/0.1"}
 
 # 命中这些标记 = key 认证通过了，只是额度/权限不足 —— 与"key 无效"要区分开
 LIMITED_MARKERS = ("credits_insufficient", "rate_limit", "quota",
@@ -158,7 +158,7 @@ def main() -> int:
     args = ap.parse_args()
 
     cfg = load()
-    local = args.proxy or (cfg.get("BB_PROXY_OS_LOCAL") or "").strip()
+    local = args.proxy or (cfg.get("RVN_PROXY_OS_LOCAL") or "").strip()
     direct = [("直连", None)]
     viaproxy = [("代理", local)] if local else []
     foreign_routes = direct + viaproxy

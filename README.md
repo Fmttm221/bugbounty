@@ -1,4 +1,4 @@
-# bugbounty
+# raven
 
 授权范围内的漏洞挖掘 skill。
 
@@ -54,16 +54,16 @@ python scripts/preflight.py   # 自检，缺什么会直接告诉你
 | `KALI_HOST` | 你的 Kali IP | Kali 上 `ip -4 addr` |
 | `KALI_USER` | Kali 用户名 | Kali 上 `whoami` |
 | `KALI_KEY_PATH` | SSH 私钥（供需要直连 ssh 的脚本） | 通常 `~/.ssh/id_ed25519` |
-| `BB_PROXY_OS_LOCAL` | **本机**的 HTTP 代理地址 | 代理软件的监听地址；Clash 默认 `http://127.0.0.1:7890` |
-| `BB_PROXY_OS_KALI` | **Kali 视角**看本机代理 | VMware NAT 网段通常是 `192.168.x.1`。<br>验证：在 Kali 上跑 `curl -x http://192.168.x.1:7890 https://api.ipify.org` |
+| `RVN_PROXY_OS_LOCAL` | **本机**的 HTTP 代理地址 | 代理软件的监听地址；Clash 默认 `http://127.0.0.1:7890` |
+| `RVN_PROXY_OS_KALI` | **Kali 视角**看本机代理 | VMware NAT 网段通常是 `192.168.x.1`。<br>验证：在 Kali 上跑 `curl -x http://192.168.x.1:7890 https://api.ipify.org` |
 | `CDP_PORT` | chrome-devtools 调试端口 | 默认 `9222` |
-| `BB_PHONE_A/B`、`BB_EMAIL_A/B` | 注册 / 登录用 | 越权测试需要 **≥ 2 个**身份 |
+| `RVN_PHONE_A/B`、`RVN_EMAIL_A/B` | 注册 / 登录用 | 越权测试需要 **≥ 2 个**身份 |
 | `MITMDUMP_PATH` | mitmdump 完整路径 | 留空自动探测；探测不到时再填 |
 | `WECHAT_LISTEN_PORT` | 抓包监听端口 | 默认 `8082` |
 
 ### 代理是可换的 —— 本 skill 不绑定 Clash
 
-`BB_PROXY_OS_LOCAL` / `BB_PROXY_OS_KALI` 就是两个**普通 HTTP 代理地址**：
+`RVN_PROXY_OS_LOCAL` / `RVN_PROXY_OS_KALI` 就是两个**普通 HTTP 代理地址**：
 Clash / v2ray / mihomo / mitmproxy / 公司代理都能填。
 
 `scripts/clash.py` 的节点切换是**可选增强** —— 只在检测到 Clash 时可用，检测不到会打印提示并以退出码 0 跳过，**不阻塞主流程**。
@@ -108,7 +108,7 @@ python scripts/provider/verify.py shodan   # 单个
 ## 目录结构
 
 ```
-bugbounty/
+raven/
 ├── SKILL.md                 skill 正文（配置 / 人机协作 / 经验库 / 渗透测试）
 ├── .env                     私密配置（gitignored）
 ├── .env.example             配置模板（逐项注释）

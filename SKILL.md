@@ -1,10 +1,10 @@
 ---
-name: bugbounty
+name: raven
 description: 一个漏洞挖掘skill
 disable-model-invocation: true
 ---
 
-# bugbounty
+# raven
 
 ## Goal
 
@@ -75,11 +75,11 @@ runs/
 
 | 分组 | 变量 | 说明 |
 |---|---|---|
-| 授权 | `BB_SCOPE` / `BB_EXCLUDE` | 留空 = 全域 / 无排除 |
-| 身份 | `BB_PHONE_A/B`、`BB_EMAIL_A/B` | 注册登录用；**越权测试需 ≥ 2 个** |
-| 网络 | `BB_PROXY_OS_LOCAL` | 国外出口，本机脚本视角 `127.0.0.1:7890` |
-| 网络 | `BB_PROXY_OS_KALI` | 国外出口，Kali 视角（填法见 README） |
-| 网络 | `BB_USER_AGENT` | 必须与 `chrome-devtools` 实际 UA 一致 |
+| 授权 | `RVN_SCOPE` / `RVN_EXCLUDE` | 留空 = 全域 / 无排除 |
+| 身份 | `RVN_PHONE_A/B`、`RVN_EMAIL_A/B` | 注册登录用；**越权测试需 ≥ 2 个** |
+| 网络 | `RVN_PROXY_OS_LOCAL` | 国外出口，本机脚本视角 `127.0.0.1:7890` |
+| 网络 | `RVN_PROXY_OS_KALI` | 国外出口，Kali 视角（填法见 README） |
+| 网络 | `RVN_USER_AGENT` | 必须与 `chrome-devtools` 实际 UA 一致 |
 | Kali | `KALI_HOST` / `KALI_PORT` / `KALI_USER` / `KALI_KEY_PATH` | |
 | 浏览器 | `CDP_PORT` | |
 | provider | 见下表 | |
@@ -90,7 +90,7 @@ runs/
 | 出口 | 实现 |
 |---|---|
 | 国内 | Kali 直连，不设代理变量 |
-| 国外 | `BB_PROXY_OS_LOCAL` / `BB_PROXY_OS_KALI` —— **任意 HTTP 代理均可** |
+| 国外 | `RVN_PROXY_OS_LOCAL` / `RVN_PROXY_OS_KALI` —— **任意 HTTP 代理均可** |
 
 > **不绑定 Clash**：Clash / v2ray / mihomo / mitmproxy / 公司代理都能填。
 > `scripts/clash.py` 的节点切换是**可选增强**，检测不到 Clash 时静默跳过，不阻塞主流程。
@@ -100,8 +100,8 @@ runs/
 | provider | 归属 | 出口 |
 |---|---|---|
 | FOFA / QUAKE / HUNTER | 国内 | **直连** |
-| SHODAN / CENSYS / VIRUSTOTAL / GITHUB | 国外 | `BB_PROXY_OS_LOCAL` |
-| URLSCAN | 国外 | 直连可通，亦可走 `BB_PROXY_OS_LOCAL` |
+| SHODAN / CENSYS / VIRUSTOTAL / GITHUB | 国外 | `RVN_PROXY_OS_LOCAL` |
+| URLSCAN | 国外 | 直连可通，亦可走 `RVN_PROXY_OS_LOCAL` |
 
 **读取约定**
 
@@ -122,7 +122,7 @@ runs/
 |---|---|
 | 可达 | `hostname` |
 | 国内出口 | `curl -s -o /dev/null -w '%{http_code}' https://www.baidu.com` |
-| 国外出口 | `curl -s -x <BB_PROXY_OS_KALI 的值> https://api.ipify.org` |
+| 国外出口 | `curl -s -x <RVN_PROXY_OS_KALI 的值> https://api.ipify.org` |
 | 工具链 | `command -v nmap httpx nuclei ffuf sqlmap dalfox` |
 
 > Kali 侧**不共享 `.env`**，上面用到的值需**显式注入** ssh 命令。
@@ -225,7 +225,7 @@ evidence_refs: [idor-02-01-resp.txt, idor-02-02-shot.png]
 **执行**
 
 1. `python scripts/wechat_capture.py start --target <target>`
-   —— 启动 mitmdump 并把系统代理指向它（**改前备份**），上游串接 `BB_PROXY_OS_LOCAL` 保证出口不变
+   —— 启动 mitmdump 并把系统代理指向它（**改前备份**），上游串接 `RVN_PROXY_OS_LOCAL` 保证出口不变
 2. 人类在**电脑版微信**打开目标小程序并正常点击
 3. `python scripts/wechat_capture.py stop`
    —— 停掉 mitmdump，**原样恢复**系统代理
@@ -401,7 +401,7 @@ L0 授权
 1. 分辨资产归属（国内 / 国外）—— 依据 ICP 备案、TLD、DNS 落地 IP、CDN 分布
 2. 按归属选择出口：
    - **国内** → Kali 直连，不设代理变量
-   - **国外** → Kali 设 `http_proxy` / `https_proxy` = `BB_PROXY_OS_KALI`
+   - **国外** → Kali 设 `http_proxy` / `https_proxy` = `RVN_PROXY_OS_KALI`
 3. 需要**换出口 IP**（被封 / 区域限制 / provider 429）→ `python scripts/clash.py next`（可选，需 Clash）
 
 **产出**：`scope.md`
