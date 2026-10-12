@@ -127,6 +127,54 @@ runs/
 
 > Kali 侧**不共享 `.env`**，上面用到的值需**显式注入** ssh 命令。
 
+### 1.5 finding 格式
+
+L4 产出的每条漏洞是一个 `.md`，放 `findings/`。**下面是权威字段定义** ——
+L5 的链、L6 的报告都从这里取数。
+
+```yaml
+---
+id: idor-02@example.com          # 稳定标识，重跑不变。格式 <类型>-<序号>@<host>
+type: idor                       # 漏洞类型，映射平台字段（见 assets/report_<平台>.md）
+endpoint: https://example.com/api/order/123
+method: POST
+param: order_id                  # 受影响参数（无则省略）
+role: A                          # 复现用的身份：anonymous / A / B / admin
+auth_state: authenticated        # anonymous / authenticated
+
+cvss_vector: AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N
+cvss_score: 6.5
+impact_level: I2                 # I1–I4
+submission_strategy: STANDALONE  # STANDALONE / CHAIN_ONLY / DISCARD
+
+publicness: private              # 泄露 / 越权类**必填**：public / semi_public / private / unknown
+reproducible: true
+verified: true
+evidence_refs: [idor-02-01-resp.txt, idor-02-02-shot.png]
+---
+
+## 说明
+
+<一段话说清这是什么>
+
+## 复现步骤
+
+1. …
+2. …
+
+## 修复建议
+
+<具体到代码 / 配置层>
+```
+
+**字段规则**
+
+- `id` **重跑不变** —— 同一漏洞再测一次 id 必须相同，L5 的链靠它绑定
+- `impact_level` / `submission_strategy` 由 §4 判定标准产出，**L4 必填**
+- `publicness` 仅泄露 / 越权类必填（见 §4 L5.1）
+- `evidence_refs` 填 `evidence/` 下的**文件名**
+- 文件名遵循 §1.1 命名规范：`<类型>-<序号>-<简述>.md`
+
 ---
 
 ## 2. 人机协作模块
@@ -490,7 +538,7 @@ L0 授权
 
 **链必须证据关联，不能靠类型硬拼**
 
-1. 节点绑定具体 `finding_id`；链上**不写裸类型名**
+1. 节点绑定具体 finding 的 `id`（格式 `<类型>-<序号>@<host>`，见 §1.5）；链上**不写裸类型名**
 2. 同一条链的节点落在**同一注册域**（或显式声明的 pivot），否则是假链
 3. `evidence_refs` = 成员 finding 证据的并集
 4. 缺口要输出 `missing`（缺哪个 role）与 `next_actions`

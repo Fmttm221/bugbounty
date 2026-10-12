@@ -94,7 +94,7 @@ SQL 注入
 
 ## 六、finding → 报告字段的填充来源
 
-finding 文件（`runs/<target>/<ts>/findings/*.md`）的 frontmatter 字段：
+> **finding 的权威字段定义在 `SKILL.md §1.5`**，此处只说"哪个字段填到哪个报告字段"。
 
 | 报告字段 | 来源 |
 |---|---|
@@ -105,12 +105,19 @@ finding 文件（`runs/<target>/<ts>/findings/*.md`）的 frontmatter 字段：
 | 5 漏洞URL | `endpoint`，补全 scheme |
 | 6 漏洞类型 | 固定 `事件型` |
 | 7 漏洞具体类型 | `type` → 第七节映射 |
-| 8 漏洞等级 | `cvss_score` → 第四节映射 |
+| 8 漏洞等级 | `cvss_score`（CVSS 3.1）→ 第四节映射 |
 | 9 简要描述 | 人工撰写，**不得含漏洞细节** |
-| 10 详细细节 | `repro_steps`（Kali CLI + Burp 操作步骤）+ 请求 / 响应证据 |
-| 11 修复方案 | `remediation` |
+| 10 详细细节 | finding 的 `## 复现步骤` 章节（Kali CLI + Burp 操作步骤）+ `evidence_refs` 指向的证据 |
+| 11 修复方案 | finding 的 `## 修复建议` 章节 |
 | 12 所属行业 | 人工确认 |
 | 13 所属地区 | 人工确认 |
+
+**提交前额外核对**（字段定义见 `SKILL.md §1.5`）：
+
+- `verified: true` 且 `reproducible: true`
+- `impact_level` ∈ `I1` / `I2`（`I3` 视条件；`I4` 不单独提交）
+- 泄露 / 越权类必须有 `publicness`，且不得是 `public` / `unknown`
+- `evidence_refs` 里的文件在 `evidence/` 中真实存在
 
 ## 七、`type` → 字段 7 映射
 

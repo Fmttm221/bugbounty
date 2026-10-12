@@ -24,14 +24,14 @@ LOG_PATH = os.environ.get("WECHAT_LOG") or os.path.join(
 MAX_BODY = 8000
 MAX_LOG_BYTES = 256 * 1024 * 1024
 
-# 强制记录的主机（命中则即使是静态资源也记），可在 .env 用 WECHAT_KEEP_HOSTS 覆盖
+# 强制记录的主机（命中则即使是静态资源也记）。由 wechat_capture.py 注入 WECHAT_KEEP_HOSTS
 KEEP_HOSTS = re.compile(
     os.environ.get("WECHAT_KEEP_HOSTS")
     or r"(weixin|wechat|tencent|qpic\.cn|qlogo\.cn|servicewechat)",
     re.IGNORECASE,
 )
 
-# 噪音主机（本机软件的后台流量），可在 .env 用 WECHAT_EXCLUDE_HOSTS 覆盖
+# 噪音主机（本机软件的后台流量）。由 wechat_capture.py 注入 WECHAT_EXCLUDE_HOSTS
 EXCLUDE_HOSTS = set(filter(None, (os.environ.get("WECHAT_EXCLUDE_HOSTS") or "").split(",")))
 
 STATIC_EXT = re.compile(

@@ -200,7 +200,8 @@ def cmd_start(args) -> int:
 
     env = dict(os.environ)
     env["WECHAT_LOG"] = str(log_path)
-    env["WECHAT_KEEP_HOSTS"] = args.keep_hosts or ""
+    env["WECHAT_KEEP_HOSTS"] = args.keep_hosts or (cfg.get("WECHAT_KEEP_HOSTS") or "")
+    env["WECHAT_EXCLUDE_HOSTS"] = args.exclude_hosts or (cfg.get("WECHAT_EXCLUDE_HOSTS") or "")
 
     creation = 0x00000008 if IS_WIN else 0
     proc = subprocess.Popen(cmd, cwd=str(ROOT), stdout=subprocess.DEVNULL,
@@ -303,7 +304,8 @@ def main() -> int:
     p.add_argument("--no-proxy", action="store_true", help="不改系统代理")
     p.add_argument("--direct", action="store_true", help="不经上游代理")
     p.add_argument("--fresh", action="store_true", default=True, help="清空旧日志（默认）")
-    p.add_argument("--keep-hosts", default="", help="覆盖主机白名单正则")
+    p.add_argument("--keep-hosts", default="", help="覆盖主机白名单正则；留空则读 .env 的 WECHAT_KEEP_HOSTS")
+    p.add_argument("--exclude-hosts", default="", help="噪音主机黑名单，逗号分隔；留空则读 .env 的 WECHAT_EXCLUDE_HOSTS")
     p.set_defaults(fn=cmd_start)
 
     p = sub.add_parser("stop"); add_target(p); p.set_defaults(fn=cmd_stop)

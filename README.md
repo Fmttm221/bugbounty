@@ -85,7 +85,7 @@ python scripts/provider/verify.py shodan   # 单个
 |---|---|---|---|---|---|
 | quake | 国内 | 是 | 直连 | ✅ | 每账号 5 次/月；多账号自动轮换；免费额度为 0 时**拒绝查询**以防误扣 credit |
 | crtsh | 国外 | **否** | **需代理** | ✅ | 站点不稳定，脚本自带重试 |
-| certspotter | 国外 | 否（可选带 key 提额） | 直连 | ✅ | |
+| certspotter | 国外 | **否** | 直连 | ✅ | |
 | wayback | 国外 | **否** | **需代理** | ✅ | CDX 极慢，脚本已加 `fastLatest=true` |
 | netlas | 国外 | 是 | 直连 | ✅ | |
 | urlscan | 国外 | 是（可免费注册） | 直连 | ✅ | search 1000/日 |
