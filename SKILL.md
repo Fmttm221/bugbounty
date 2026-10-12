@@ -38,6 +38,11 @@ runs/
         └── report.md              # L6 报告
 ```
 
+> **注意区分两个 assets/**：
+> - `runs/<target>/<ts>/assets/` —— **L1 资产清单**（本次任务产出）
+> - `./assets/`（**skill 根**）—— **报告模板**，如 `report_butian.md`
+> 报告模板永远在 skill 根，不要写进 run 目录。
+
 **创建规则**：目录**按需创建**，不要一上来铺满空目录。
 
 **命名规范**
@@ -71,7 +76,7 @@ runs/
 
 ### 1.3 .env
 
-**变量清单**（模板见 `.env.example`）
+**变量清单** —— **`.env.example` 是唯一权威**，本节只说明分组与用途
 
 | 分组 | 变量 | 说明 |
 |---|---|---|
@@ -80,10 +85,9 @@ runs/
 | 网络 | `RVN_PROXY_OS_LOCAL` | 国外出口，本机脚本视角 `127.0.0.1:7890` |
 | 网络 | `RVN_PROXY_OS_KALI` | 国外出口，Kali 视角（填法见 README） |
 | 网络 | `RVN_USER_AGENT` | 必须与 `chrome-devtools` 实际 UA 一致 |
-| Kali | `KALI_HOST` / `KALI_PORT` / `KALI_USER` / `KALI_KEY_PATH` | |
+| Kali | `KALI_HOST` / `KALI_USER` | 仅供 preflight 核对；连接由 kali MCP 管理 |
 | 浏览器 | `CDP_PORT` | |
-| provider | 见下表 | |
-| provider | `URLSCAN_KEY` | 额度见 `scripts/provider/urlscan.py` |
+| provider | 见下表 | **变量名以 `.env.example` 为准** |
 
 **国内 / 国外出口**
 
@@ -99,14 +103,14 @@ runs/
 
 | provider | 归属 | 出口 |
 |---|---|---|
-| FOFA / QUAKE / HUNTER | 国内 | **直连** |
-| SHODAN / CENSYS / VIRUSTOTAL / GITHUB | 国外 | `RVN_PROXY_OS_LOCAL` |
-| URLSCAN | 国外 | 直连可通，亦可走 `RVN_PROXY_OS_LOCAL` |
+| QUAKE | 国内 | 直连 |
+| SHODAN / CENSYS / NETLAS / ABUSEIPDB / IPINFO / URLSCAN / OTX / CERTSPOTTER | 国外 | 直连（不通则走 `RVN_PROXY_OS_LOCAL`） |
+| CRTSH / WAYBACK | 国外 | **必须走 `RVN_PROXY_OS_LOCAL`** |
 
 **读取约定**
 
-1. **代码**（`scripts/provider/*`）：`from env import load` → `load()["FOFA_KEY"]`
-2. **Agent 取单值**：`python scripts/env.py FOFA_KEY`
+1. **代码**（`scripts/provider/*`）：`from env import load` → `load()["URLSCAN_API_KEY"]`
+2. **Agent 取单值**：`python scripts/env.py URLSCAN_API_KEY`
 3. **Agent 查可用项**：`python scripts/env.py --list` —— **只列变量名，不返回值**
 4. **Kali 侧不共享 `.env`** —— 需要时显式传参注入 ssh 命令
 
@@ -174,6 +178,56 @@ evidence_refs: [idor-02-01-resp.txt, idor-02-02-shot.png]
 - `publicness` 仅泄露 / 越权类必填（见 §4 L5.1）
 - `evidence_refs` 填 `evidence/` 下的**文件名**
 - 文件名遵循 §1.1 命名规范：`<类型>-<序号>-<简述>.md`
+
+### 1.6 scope.md 与 state.md 格式
+
+这两个文件横跨所有层，格式固定下来才能被稳定读写。
+
+**`scope.md`** —— L0 产出，后续所有阶段读它
+
+```yaml
+# 授权与范围（每行都标来源：用户 优先于 默认）
+授权状态: 已获授权        来源: 默认
+测试范围: 全域            来源: 默认
+排除项:   无              来源: 默认
+禁止操作: 无              来源: 默认
+防护假设: 存在 WAF        来源: 默认
+
+# 出口
+资产归属: 国内 / 国外 / 内网
+出口:     Kali 直连  或  RVN_PROXY_OS_KALI 的值
+```
+
+**`state.md`** —— 进度与卡点，跨层维护
+
+```markdown
+# 进度 — <target>
+
+| 层 | 状态 | 产出 |
+|---|---|---|
+| L0 授权 | 完成 | scope.md |
+| L1 资产收集 | 完成 | assets/ recon/ |
+| … | 未开始 / 进行中 / 阻塞 | |
+
+## 偏离记录
+
+| # | 偏离 | 理由 | 影响 |
+|---|---|---|---|
+
+## 会话状态
+
+sessions: 可用 / 不可用（原因）
+  A: <account>  id=<>  bid=<>
+
+## 待办 / 阻塞
+
+- [ ] …
+```
+
+**规则**
+
+- `scope.md` 每行标**来源**，用户声明的优先
+- 偏离一旦发生就追加到 `state.md` 的「偏离记录」，**不允许只做不记**（§4 门禁软化的前提）
 
 ---
 
@@ -280,7 +334,7 @@ wechat/
 keywords: SSRF 打云元数据
 confidence: high
 last_verified: 2026-03-01
-source: PI-XX-001
+source: idor-02@example.com
 hint: SSRF 优先试云元数据
 ---
 
@@ -555,9 +609,9 @@ L0 授权
 **先问平台，再读模板**
 
 1. **询问用户目标平台**（补天 / HackerOne / Bugcrowd / …）
-2. 读 `assets/report_<平台>.md` 作为格式依据
+2. 读 skill 根的 `./assets/report_<平台>.md` 作为格式依据
 3. **模板不存在时**：不要套用别的平台格式 —— 先向用户要该平台的字段要求，
-   生成 `assets/report_<平台>.md` 之后再写报告
+   生成 `./assets/report_<平台>.md` 之后再写报告
 
 **提交策略**：`I1` / `I2` + 可复现 → 提交；`I3` 视条件依赖；`I4` 不单独提交（进链或丢弃）
 

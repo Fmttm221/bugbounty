@@ -1,5 +1,9 @@
 # raven
 
+> 渡鸦以**会使用工具、会规划多步任务、会记住教训**著称。
+> 这个 skill 照着同一套思路搭：**六层流水线**（多步规划）· **门禁与红线**（边界）·
+> **经验库**（记住教训）· **漏洞链**（把零散发现串成完整路径）。
+
 授权范围内的漏洞挖掘 skill。
 
 以 `ssh-mcp`（远端 Kali 工具链）与 `chrome-devtools-mcp`（本机浏览器）为两条主通道，覆盖
@@ -53,7 +57,6 @@ python scripts/preflight.py   # 自检，缺什么会直接告诉你
 |---|---|---|
 | `KALI_HOST` | 你的 Kali IP | Kali 上 `ip -4 addr` |
 | `KALI_USER` | Kali 用户名 | Kali 上 `whoami` |
-| `KALI_KEY_PATH` | SSH 私钥（供需要直连 ssh 的脚本） | 通常 `~/.ssh/id_ed25519` |
 | `RVN_PROXY_OS_LOCAL` | **本机**的 HTTP 代理地址 | 代理软件的监听地址；Clash 默认 `http://127.0.0.1:7890` |
 | `RVN_PROXY_OS_KALI` | **Kali 视角**看本机代理 | VMware NAT 网段通常是 `192.168.x.1`。<br>验证：在 Kali 上跑 `curl -x http://192.168.x.1:7890 https://api.ipify.org` |
 | `CDP_PORT` | chrome-devtools 调试端口 | 默认 `9222` |
@@ -147,12 +150,33 @@ raven/
 | `scripts/wechat_parse.py` | 抓包日志 → 端点清单 |
 | `scripts/provider/base.py` | provider 通用：HTTP / 代理 / 配额 / 脱敏 |
 | `scripts/provider/verify.py` | 验证全部 provider key |
+| `scripts/check_consistency.py` | **一致性校验**：文档引用的变量/路径是否与代码对齐 |
 | `scripts/provider/domains.py` | **域名资产枚举**：crtsh / certspotter / otx / wayback / netlas |
 | `scripts/provider/ip_intel.py` | **IP 情报**：ipinfo / abuseipdb / shodan / censys / otx |
 | `scripts/provider/quake.py` | 360 Quake（双账号轮换 + 额度保护） |
 | `scripts/provider/urlscan.py` | urlscan.io |
 
 ---
+
+## 维护
+
+改完文档或脚本，**跑一次一致性校验**：
+
+```bash
+python scripts/check_consistency.py
+```
+
+它检查 5 类漂移：
+
+1. `.env` 与 `.env.example` 变量名是否一致
+2. SKILL.md / README 提到的变量是否都在 `.env.example` 里
+3. 文档引用的静态路径（`scripts/` `assets/` `references/`）是否真实存在
+4. 脚本读取的环境变量是否都在 `.env.example` 里
+5. 经验库 `INDEX.md` 是否覆盖全部条目
+
+> **为什么需要它**：同一批变量名在 SKILL.md / README / `.env.example` / 代码 四处出现。
+> README 面向人（GitHub 浏览）、SKILL.md 面向 agent，**重复是合理的**，
+> 但手工同步必然漂移 —— 本项目历史上已发生 7 次。与其禁止重复，不如把对账变成一条命令。
 
 ## 已知限制
 
