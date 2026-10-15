@@ -3,6 +3,9 @@
 .env.local
 *.env
 
+# 个人经验库（本地维护，不进仓库）
+references/experience/
+
 # Python
 __pycache__/
 *.py[cod]
